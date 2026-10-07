@@ -1,7 +1,7 @@
 <?php
 /**
  * config/database.php
- * MySQL connection (mysqli) + helpers used by index.php
+ * MySQL connection (mysqli) + helpers used by index.php and products.php
  */
 
 define('DB_HOST', 'localhost');
@@ -60,8 +60,12 @@ function db_status(?mysqli $conn): array
 
 /**
  * Loads products in the shape script.js expects:
- * id, n (name), p (price), o (old price), e (emoji), c (color), t (tag), so (sold out)
+ * id, n (name), p (starting price), o (old price), e (emoji), c (color), t (tag), so (sold out),
+ * k (category), m (picture path), b (best seller), q (slideshow quote), sd (slideshow description), s (0 = hide from slideshow), d (note), v (price options [[label, price], ...])
  * Returns [] when the database is unavailable (script.js then uses its sample products).
+ *
+ * The optional `best_seller` column is created by products_update.sql. If it does not exist yet,
+ * the home page simply shows the first 4 products.
  */
 function get_products(?mysqli $conn): array
 {
@@ -71,9 +75,7 @@ function get_products(?mysqli $conn): array
 
     $items = [];
     try {
-        $result = $conn->query(
-            'SELECT id, name, price, old_price, emoji, color, tag, sold_out FROM products ORDER BY id'
-        );
+        $result = $conn->query('SELECT * FROM products ORDER BY id');
         while ($r = $result->fetch_assoc()) {
             $item = [
                 'id' => (int)$r['id'],
@@ -85,8 +87,23 @@ function get_products(?mysqli $conn): array
             if ($r['old_price'] !== null) { $item['o'] = (float)$r['old_price']; }
             if ($r['tag'] !== null && $r['tag'] !== '') { $item['t'] = $r['tag']; }
             if ((int)$r['sold_out'] === 1) { $item['so'] = 1; }
-            $items[] = $item;
+            if (!empty($r['best_seller'])) { $item['b'] = 1; }
+            if (!empty($r['note'])) { $item['d'] = $r['note']; }
+            if (!empty($r['category'])) { $item['k'] = $r['category']; }   // optional, see products_update.sql
+            if (!empty($r['image'])) { $item['m'] = $r['image']; }   // optional picture path, see products_update.sql
+            if (!empty($r['slideshow_quote'])) { $item['q'] = $r['slideshow_quote']; }   // optional, see products_update.sql
+            if (!empty($r['slideshow_description'])) { $item['sd'] = $r['slideshow_description']; } // optional, see products_update.sql
+            if (isset($r['in_slideshow']) && (int)$r['in_slideshow'] === 0) { $item['s'] = 0; } // hidden from the slideshow
+            $items[(int)$r['id']] = $item;
         }
+
+        // price options (Single, 3 stems, 6 stems ...) -> $item['v'] = [[label, price], ...]
+        $opts = $conn->query('SELECT product_id, label, price FROM product_options ORDER BY product_id, sort_order, id');
+        while ($o = $opts->fetch_assoc()) {
+            $pid = (int)$o['product_id'];
+            if (isset($items[$pid])) { $items[$pid]['v'][] = [$o['label'], (float)$o['price']]; }
+        }
+        $items = array_values($items);
     } catch (mysqli_sql_exception $e) {
         return [];
     }

@@ -13,14 +13,15 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 </head><body>
-<div class="announce">🌸 Fresh, hand-arranged flowers for every occasion · Message us to place your order</div>
 <div class="topbar" id="top"><span>&#9742; Our phone number: (+63) 000 000 0000</span><div class="toplinks"><a href="#contact">Contact us</a><a href="login.php">My account</a></div></div>
 <header class="top">
- <p class="tagline">Hand-arranged flowers,<br>made with love.</p>
+ <div class="brand">
  <a class="logo" href="#top"><img src="assets/image/logo.jpg" alt="Annroe's Flower Shop"></a>
- <div class="acct"><a class="cta" href="#contact">Order now</a><a href="login.php">Login / Register</a></div>
+  <p class="tagline">Hand-arranged flowers,<br>made with love.</p>
+ </div>
+ <div class="acct"><a class="cta" href="#best">Order now</a><a href="login.php">Login / Register</a></div>
 </header>
-<nav><a href="#top">HOME</a><a href="#about">ABOUT</a><div class="dd"><a href="#occasions" aria-haspopup="true" aria-expanded="false">OCCASIONS<i class="chev"></i></a><ul><li><a href="#occasions">Valentines Flowers</a></li><li><a href="#occasions">Anniversary Flowers</a></li><li><a href="#occasions">Mother's Day Flowers</a></li><li><a href="#occasions">Father's Day Gifts</a></li><li><a href="#occasions">Birthday Flowers</a></li><li><a href="#occasions">Funeral Flowers</a></li><li><a href="#occasions">Inaugural Flowers</a></li><li><a href="#occasions">Get Well Soon Flowers</a></li><li><a href="#occasions">Memorial / All Soul's Day / All Saint's Day Flowers</a></li><li><a href="#occasions">Congratulations Flowers</a></li></ul></div><div class="dd"><a href="#best" aria-haspopup="true" aria-expanded="false">FLOWERS<i class="chev"></i></a><ul><li><a href="#best">Sunflower Bouquet</a></li><li><a href="#best">Roses Bouquet</a></li><li><a href="#best">Lilies Bouquet</a></li><li><a href="#best">Tulips Bouquet</a></li><li><a href="#best">Gerberas Bouquet</a></li><li><a href="#best">Carnation Bouquet</a></li></ul></div><a href="#best">BEST SELLERS</a><a href="#contact">CONTACT</a><div class="nsearch" id="nsearch"><button type="button" class="ns-btn" aria-label="Open search" aria-expanded="false" aria-controls="nsq"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><form class="ns-form" role="search" action="index.php" method="get"><input id="nsq" name="q" type="search" placeholder="Search flowers..." autocomplete="off" aria-label="Search flowers" tabindex="-1"><kbd>Ctrl K</kbd><button type="button" class="ns-x" aria-label="Close search" tabindex="-1">&times;</button></form></div></nav>
+<nav><a href="#top">HOME</a><a href="#about">ABOUT</a><div class="dd"><a href="#contact" aria-haspopup="true" aria-expanded="false">OCCASIONS<i class="chev"></i></a><ul><li><a href="#contact">Valentines Flowers</a></li><li><a href="#contact">Anniversary Flowers</a></li><li><a href="#contact">Mother's Day Flowers</a></li><li><a href="#contact">Father's Day Gifts</a></li><li><a href="#contact">Birthday Flowers</a></li><li><a href="#contact">Funeral Flowers</a></li><li><a href="#contact">Inaugural Flowers</a></li><li><a href="#contact">Get Well Soon Flowers</a></li><li><a href="#contact">Memorial / All Soul's Day / All Saint's Day Flowers</a></li><li><a href="#contact">Congratulations Flowers</a></li></ul></div><div class="dd"><a href="products.php" aria-haspopup="true" aria-expanded="false">FLOWERS<i class="chev"></i></a><ul><li><a href="products.php">All Flowers</a></li><li><a href="products.php?cat=roses">Roses Bouquet</a></li><li><a href="products.php?cat=carnations">Carnation Bouquet</a></li><li><a href="products.php?cat=tulips">Tulips Bouquet</a></li><li><a href="products.php?cat=lisianthus">Lisianthus Bouquet</a></li><li><a href="products.php?cat=gerbera">Gerbera Bouquet</a></li></ul></div><a href="#best">BEST SELLERS</a><a href="#contact">CONTACT</a><div class="nsearch" id="nsearch"><button type="button" class="ns-btn" aria-label="Open search" aria-expanded="false" aria-controls="nsq"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><form class="ns-form" role="search" action="products.php" method="get"><input id="nsq" name="q" type="search" placeholder="Search flowers..." autocomplete="off" aria-label="Search flowers" tabindex="-1"><kbd>Ctrl K</kbd><button type="button" class="ns-x" aria-label="Close search" tabindex="-1">&times;</button></form></div></nav>
 
 <div class="hero"><div class="card">
   <span class="eyebrow">Annroe's Flower Shop</span>
@@ -29,35 +30,51 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
   <div class="actions"><a class="btn solid" href="#best">See our best sellers</a><a class="btn" href="#contact">Contact us</a></div>
 </div></div>
 
-<div class="band"><section id="about">
-  <div class="about">
-    <div class="about-card"><img src="assets/image/logo.jpg" alt="Annroe's Flower Shop logo" width="220" height="220"></div>
-    <div class="about-txt">
-      <span class="eyebrow dark">Our story</span>
-      <h2 class="left">Flowers arranged with care</h2>
+<div class="band"><section id="featured">
+  <div class="aslider" id="aslider" role="region" aria-roledescription="carousel" aria-label="Our flowers">
+    <div class="aslides" id="aslides" aria-live="off">
+      <!-- one slide per available flower is added here by script.js from the products table -->
+    </div>
+    <div class="adots" id="adots" role="tablist" aria-label="Choose slide"></div>
+  </div>
+</section></div>
+
+<div class="band alt"><section class="duo-sec" id="story-best">
+ <div class="duo">
+
+  <!-- LEFT: Our story -->
+  <div class="pane story" id="about">
+    <div class="story-head">
+      <div class="story-pic">
+        <img src="assets/image/logo.jpg" alt="Annroe's Flower Shop logo" width="150" height="150">
+      </div>
+      <div class="story-title">
+        <span class="eyebrow dark">Our story</span>
+        <h2 class="left">Flowers arranged with care</h2>
+      </div>
+    </div>
+    <div class="story-text">
       <p>Annroe's Flower Shop has been arranging flowers since 1992. Every bouquet is made by hand by our experienced florists, using fresh blooms picked for your occasion.</p>
       <p>From birthdays and anniversaries to get-well wishes and remembrances, we help you say it with flowers.</p>
-      <a class="btn" href="#contact">Talk to our florists</a>
+    </div>
+    <div class="badges">
+      <div class="badge"><b>1992</b><span>Since</span></div>
+      <div class="badge"><b>100%</b><span>Made by hand</span></div>
+      <div class="badge"><b>Fresh</b><span>Blooms picked for you</span></div>
     </div>
   </div>
-</section></div>
 
-<div class="band alt"><section id="occasions">
-  <h2>Flowers for every occasion</h2><p class="sub">Whatever you are celebrating, we will arrange something for it</p>
-  <div class="occs">
-    <a class="occ" href="#contact"><span class="oe">💝</span><span>Valentine's</span></a>
-    <a class="occ" href="#contact"><span class="oe">💍</span><span>Anniversary</span></a>
-    <a class="occ" href="#contact"><span class="oe">🌷</span><span>Mother's Day</span></a>
-    <a class="occ" href="#contact"><span class="oe">🎂</span><span>Birthday</span></a>
-    <a class="occ" href="#contact"><span class="oe">🌼</span><span>Get Well Soon</span></a>
-    <a class="occ" href="#contact"><span class="oe">🎉</span><span>Congratulations</span></a>
-    <a class="occ" href="#contact"><span class="oe">🕊️</span><span>Funeral</span></a>
-    <a class="occ" href="#contact"><span class="oe">🕯️</span><span>Memorial / All Saints' Day</span></a>
+  <!-- RIGHT: Best sellers -->
+  <div class="pane bestpane" id="best">
+    <span class="eyebrow dark reveal">Customer favorites</span>
+    <h2 class="left reveal">Our best sellers</h2>
+    <p class="sub reveal">Hand-arranged bouquets our customers love</p>
+    <div class="grid" id="grid"></div>
+    <div class="more reveal"><a class="btn" href="products.php" target="_blank" rel="noopener">View all flowers &#8599;</a></div>
   </div>
-</section></div>
 
-<div class="band"><section id="best"><h2>Our best sellers</h2><p class="sub">Hand-arranged bouquets our customers love</p>
-<div class="grid" id="grid"></div></section></div>
+ </div>
+</section></div>
 
 <div class="band alt"><section id="how">
   <h2>How to order</h2><p class="sub">Simple, personal, and made just for you</p>
