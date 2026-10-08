@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flower bloom animation</title>
+<style>
+:root { --bg:#fdf7f4; --card:#ffffff; --text:#3b2a30; --muted:#7a6a70; --accent:#c4577f; --line:#ecd9d9;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#1f1a1c; --card:#2b2326; --text:#f3e6e9; --muted:#b9a5ac; --accent:#e58aa9; --line:#43363b; } }
+:root[data-theme="dark"] { --bg:#1f1a1c; --card:#2b2326; --text:#f3e6e9; --muted:#b9a5ac; --accent:#e58aa9; --line:#43363b; }
+html, body { height:100%; margin:0; }
+body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; overflow:hidden; }
+#stage { position:fixed; inset:0; overflow:hidden; transition:filter 1.4s ease, opacity 1.4s ease; }
+#stage.haze { filter:blur(14px); opacity:0; }
+#stage img { position:absolute; animation:bloom .65s cubic-bezier(.2,1.5,.4,1) both; will-change:transform; }
+@keyframes bloom {
+  from { transform:scale(0) rotate(calc(var(--r) - 40deg)); opacity:0; }
+  to   { transform:scale(1) rotate(var(--r)); opacity:1; }
+}
+.static img { animation:none; transform:rotate(var(--r)); }
+#card { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:100000; width:min(86vw,340px);
+  background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px 22px; text-align:center; }
+#card h1 { font-size:20px; font-weight:500; margin:0 0 6px; }
+#card p { font-size:14px; color:var(--muted); margin:0 0 16px; line-height:1.5; }
+#card button { font:inherit; font-size:14px; background:var(--accent); color:#fff; border:0; border-radius:8px; padding:9px 16px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="card">
+  <h1>Order confirmed</h1>
+  <p>Your flowers are being prepared. Thank you!</p>
+  <button id="replay" type="button">Replay animation</button>
+</div>
+<script>
+(function () {
+  // ---- Settings ----
+  var FOLDER = 'flowers/';   // folder with the transparent .webp photos, next to this file
+  var EXT = 'webp';
+  var EMBED = {};     // (preview only) photos embedded in the page
+  // name = file name without extension, w = how often it appears,
+  // size = [min, max] width in px, rot = max tilt in degrees (360 = any angle)
+  var PHOTOS = [
+    { name: 'rose-red',          w: 3, size: [90, 170],  rot: 360 },
+    { name: 'carnation-pink',    w: 3, size: [90, 170],  rot: 360 },
+    { name: 'carnation-yellow',  w: 1, size: [90, 160],  rot: 360 },
+    { name: 'gerbera-pink',      w: 2, size: [90, 170],  rot: 360 },
+    { name: 'gerbera-yellow',    w: 2, size: [90, 170],  rot: 360 },
+    { name: 'lisianthus-purple', w: 2, size: [80, 150],  rot: 360 },
+    { name: 'babys-breath',      w: 2, size: [120, 210], rot: 50 }
+  ];
+
+  var bag = [];
+  function prepare(p) {
+    var src = EMBED[p.name] || (FOLDER + p.name + '.' + EXT);
+    return new Promise(function (resolve) {
+      var t = new Image();
+      t.onload = function () { p.src = src; p.ratio = t.naturalHeight / t.naturalWidth; for (var k = 0; k < p.w; k++) bag.push(p); resolve(); };
+      t.onerror = function () { resolve(); };   // missing file: just skip it
+      t.src = src;
+    });
+  }
+
+  var stage = document.getElementById('stage');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var timer = null, hold = null;
+
+  function addFlower(z) {
+    var p = bag[Math.floor(Math.random() * bag.length)];
+    var w = p.size[0] + Math.random() * (p.size[1] - p.size[0]);
+    var h = w * p.ratio;
+    var r = p.rot === 360 ? Math.round(Math.random() * 360) : Math.round((Math.random() - .5) * p.rot * 2);
+    var img = new Image();
+    img.src = p.src; img.alt = '';
+    img.style.cssText = 'width:' + w + 'px;height:' + h + 'px;z-index:' + z +
+      ';left:' + (-w / 3 + Math.random() * (innerWidth - w / 3)) + 'px;top:' + (-h / 3 + Math.random() * (innerHeight - h / 3)) +
+      'px;--r:' + r + 'deg';
+    stage.appendChild(img);
+  }
+
+  function run() {
+    clearInterval(timer); clearTimeout(hold);
+    stage.className = ''; stage.innerHTML = '';
+    if (!bag.length) return;
+    var total = Math.min(300, Math.round(innerWidth * innerHeight / 4200));
+    if (reduce) {
+      stage.className = 'static';
+      for (var k = 0; k < total; k++) addFlower(k);
+      return;
+    }
+    var n = 0;
+    timer = setInterval(function () {
+      addFlower(n);
+      if (++n >= total) {
+        clearInterval(timer);
+        hold = setTimeout(function () { stage.className = 'haze'; }, 1000);
+      }
+    }, 28);
+  }
+
+  document.getElementById('replay').addEventListener('click', run);
+  Promise.all(PHOTOS.map(prepare)).then(run);
+})();
+</script>
+</body>
+</html>
