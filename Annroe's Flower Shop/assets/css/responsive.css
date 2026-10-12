@@ -1,0 +1,109 @@
+/* responsive.css — breakpoints. Mobile-first; tested targets:
+   360, 390 (phones) · 768 (tablet) · 1024, 1366 (laptop) · 1920 (desktop). */
+
+/* Phones: keep everything inside the viewport */
+@media (max-width: 575.98px) {
+  .admin-content { padding: 1rem .75rem 2rem; }
+  .ar-topbar { padding: .5rem .6rem; }
+  .ar-profile-name { display: none; }
+  .ar-page-actions { width: 100%; }
+  .ar-page-actions .btn { flex: 1 1 auto; }
+  .ar-stat { padding: .9rem 1rem; }
+  .ar-stat-value { font-size: 1.7rem; }
+  .ar-filter-bar { padding: .85rem; }
+  .ar-toast-container { left: .75rem; right: .75rem; bottom: .75rem; }
+  .ar-toast { min-width: 0; }
+  .modal-dialog { margin: .5rem; }
+}
+
+/* Tablets and up */
+@media (min-width: 768px) {
+  .admin-content { padding: 1.5rem 1.5rem 3rem; }
+  .ar-topbar { padding: .6rem 1.5rem; }
+}
+
+/* Laptop and up: fixed sidebar, hide the menu button */
+@media (min-width: 992px) {
+  .admin-sidebar { display: flex; }
+  .admin-main { margin-left: var(--ar-sidebar-width); }
+  .ar-menu-btn { display: none !important; }
+  .admin-content { padding: 1.75rem 2rem 3rem; }
+  .ar-topbar { padding: .6rem 2rem; }
+}
+
+@media (min-width: 1600px) {
+  :root { --ar-sidebar-width: 292px; }
+  .admin-content { padding-inline: 2.5rem; }
+}
+
+/* Touch devices: larger tap targets */
+@media (pointer: coarse) {
+  .btn { min-height: 44px; }
+  .form-control, .form-select { min-height: 46px; }
+  .dropdown-item { padding-block: .6rem; }
+}
+
+/* ---------- Dashboard + login additions ---------- */
+@media (max-width: 575.98px) {
+  .ar-bars { gap: .25rem; }
+  .ar-bar-value { font-size: .62rem; }
+  .ar-bar-track { height: 120px; }
+  .ar-list-item { padding: .8rem 1rem; }
+  .ar-stat-value { font-size: 1.6rem; }
+  .ar-login-card { padding: 1.5rem 1.1rem; }
+}
+@media (min-width: 992px) {
+  .ar-login { grid-template-columns: minmax(380px, 1fr) minmax(460px, 1fr); }
+  .ar-login-art { display: flex; }
+  .ar-login-card { padding: 2.5rem 2.25rem; }
+}
+@media (min-width: 1600px) {
+  .ar-bar-track { height: 190px; }
+}
+
+/* ---------- Products page ---------- */
+@media (max-width: 575.98px) {
+  .ar-option-row { flex-wrap: wrap; }
+  .ar-option-field { flex: 1 1 100%; }
+  .ar-option-small { flex: 1 1 40%; }
+  .ar-img-preview { width: 84px; height: 84px; }
+  .ar-detail-list > div { flex-direction: column; gap: 0; }
+  .ar-detail-list dd { text-align: left; }
+}
+
+/* ---------- Inventory page ---------- */
+@media (max-width: 575.98px) {
+  .ar-list-item .btn.flex-none { align-self: center; }
+  .ar-stat-btn { padding: .85rem; gap: .65rem; }
+  .ar-stat-btn .ar-stat-icon { width: 40px; height: 40px; font-size: 1.15rem; }
+}
+
+/* ---------- Orders page ---------- */
+@media (max-width: 575.98px) {
+  .ar-control .input-group { flex-wrap: nowrap; }
+}
+
+/* ---------- Schedules page ---------- */
+@media (max-width: 575.98px) {
+  .ar-legend-row { padding: .65rem .85rem; gap: .35rem 1rem; }
+}
+
+/* ---------- Schedules page ---------- */
+@media (max-width: 575.98px) {
+  .ar-legend-row { padding: .7rem .85rem; }
+}
+
+/* ---------- Reports page ---------- */
+@media (max-width: 575.98px) {
+  .ar-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+  .ar-kpi { padding: .65rem .75rem; }
+  .ar-kpi dd { font-size: 1.3rem; }
+}
+
+/* ---------- Settings page ---------- */
+@media (max-width: 575.98px) {
+  .ar-hours-row { grid-template-columns: 1fr; }
+  .ar-hours-closed { grid-column: 1; }
+  .ar-savebar { padding: .75rem; }
+  .ar-savebar .btn { flex: 1 1 auto; }
+}

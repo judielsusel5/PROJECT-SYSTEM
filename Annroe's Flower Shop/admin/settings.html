@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings | Annroe's Flower Shop Admin</title>
+  <link rel="icon" href="../assets/images/branding/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/theme.css" rel="stylesheet">
+  <link href="../assets/css/admin.css" rel="stylesheet">
+  <link href="../assets/css/responsive.css" rel="stylesheet">
+  <script>
+    try { if (localStorage.getItem('annerore_admin_theme') === 'dark') { document.documentElement.setAttribute('data-theme','dark'); document.documentElement.setAttribute('data-bs-theme','dark'); } } catch (e) {}
+  </script>
+</head>
+<body data-page="settings" data-title="Settings">
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
+  <div class="admin-shell">
+    <aside id="adminSidebar" class="admin-sidebar" aria-label="Sidebar"></aside>
+    <div id="sidebarOffcanvas"></div>
+    <div class="admin-main">
+      <header id="adminTopbar"></header>
+      <main id="mainContent" class="admin-content" tabindex="-1">
+        <div id="pageHeader"></div>
+
+        <div class="ar-demo-note" role="note">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          <div>Browser-only preferences; contact details and business hours are placeholders. No account or server settings are stored here.</div>
+        </div>
+
+        <section class="ar-card mb-3" aria-labelledby="themeTitle">
+          <div class="ar-card-header"><h2 class="ar-card-title" id="themeTitle">Appearance</h2></div>
+          <div class="ar-card-body">
+            <fieldset>
+              <legend class="form-label">Theme</legend>
+              <div class="ar-theme-options" role="radiogroup" aria-label="Theme">
+                <div>
+                  <input class="ar-theme-input" type="radio" name="theme" id="themeLight" value="light">
+                  <label class="ar-theme-card" for="themeLight"><i class="bi bi-sun" aria-hidden="true"></i><span class="fw-semibold">Light</span><span class="small text-muted">Cream, beige and dark brown</span></label>
+                </div>
+                <div>
+                  <input class="ar-theme-input" type="radio" name="theme" id="themeDark" value="dark">
+                  <label class="ar-theme-card" for="themeDark"><i class="bi bi-moon-stars" aria-hidden="true"></i><span class="fw-semibold">Dark</span><span class="small text-muted">Charcoal with muted beige text</span></label>
+                </div>
+              </div>
+              <p class="form-text mb-0 mt-2">The theme changes right away and is remembered on this device. You can also use the sun or moon button in the top bar.</p>
+            </fieldset>
+          </div>
+        </section>
+
+        <form id="settingsForm" novalidate>
+          <div class="row g-3">
+            <div class="col-12 col-xl-6 d-flex flex-column gap-3">
+
+              <section class="ar-card" aria-labelledby="brandTitle">
+                <div class="ar-card-header"><h2 class="ar-card-title" id="brandTitle">Shop name and branding</h2></div>
+                <div class="ar-card-body">
+                  <p class="form-label mb-2" id="previewLabel">Preview</p>
+                  <div class="ar-brand-preview" aria-labelledby="previewLabel">
+                    <img src="../assets/images/branding/logo.jpg" alt="Annroe's Flower Shop official logo" width="64" height="64">
+                    <div class="min-w-0"><div class="ar-brand-name" id="prevName"></div><div class="ar-brand-tag" id="prevTag"></div></div>
+                  </div>
+                  <p class="form-text">The logo is the official Annroe's asset and cannot be changed here.</p>
+                  <div class="mb-3">
+                    <label class="form-label" for="stShopName">Shop name *</label>
+                    <input type="text" class="form-control" id="stShopName" maxlength="60" autocomplete="off" required>
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <div>
+                    <label class="form-label" for="stTagline">Tagline</label>
+                    <input type="text" class="form-control" id="stTagline" maxlength="80" autocomplete="off">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="ar-card" aria-labelledby="contactTitle">
+                <div class="ar-card-header"><h2 class="ar-card-title" id="contactTitle">Contact information</h2></div>
+                <div class="ar-card-body">
+                  <p class="form-text mt-0">Placeholders only. Fill these in with the shop's real details when they are known.</p>
+                  <div class="row g-3">
+                    <div class="col-sm-6">
+                      <label class="form-label" for="stPhone">Phone</label>
+                      <input type="tel" class="form-control" id="stPhone" maxlength="20" placeholder="e.g. 0917 000 0000" autocomplete="off">
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="form-label" for="stEmail">Email</label>
+                      <input type="email" class="form-control" id="stEmail" maxlength="80" placeholder="name@example.com" autocomplete="off">
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="stAddress">Shop address</label>
+                      <textarea class="form-control" id="stAddress" rows="2" maxlength="160" placeholder="Street, barangay, city"></textarea>
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="stWebsite">Website or social page</label>
+                      <input type="text" class="form-control" id="stWebsite" maxlength="100" placeholder="e.g. facebook.com/yourshop" autocomplete="off">
+                      <div class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div class="col-12 col-xl-6 d-flex flex-column gap-3">
+
+              <section class="ar-card" aria-labelledby="hoursTitle">
+                <div class="ar-card-header">
+                  <h2 class="ar-card-title" id="hoursTitle">Business hours</h2>
+                  <button type="button" class="btn btn-sm btn-rose" id="copyMonday">Copy Monday to all days</button>
+                </div>
+                <div class="ar-card-body">
+                  <p class="form-text mt-0">Sample hours. Change them to match the shop's real opening times. They are shown here for reference and are not used to block orders or schedules.</p>
+                  <div class="ar-hours" id="hoursList">
+                <div class="ar-hours-row">
+                  <div class="form-check form-switch ar-hours-day">
+                    <input class="form-check-input" type="checkbox" role="switch" id="hrOpen0" data-hours-open="0">
+                    <label class="form-check-label fw-semibold" for="hrOpen0">Monday</label>
+                  </div>
+                  <div class="ar-hours-times">
+                    <label class="visually-hidden" for="hrFrom0">Monday opening time</label>
+                    <input type="time" class="form-control" id="hrFrom0" data-hours-from="0">
+                    <span aria-hidden="true">to</span>
+                    <label class="visually-hidden" for="hrTo0">Monday closing time</label>
+                    <input type="time" class="form-control" id="hrTo0" data-hours-to="0">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <span class="ar-hours-closed small text-muted" id="hrClosed0" hidden>Closed</span>
+                </div>
+                <div class="ar-hours-row">
+                  <div class="form-check form-switch ar-hours-day">
+                    <input class="form-check-input" type="checkbox" role="switch" id="hrOpen1" data-hours-open="1">
+                    <label class="form-check-label fw-semibold" for="hrOpen1">Tuesday</label>
+                  </div>
+                  <div class="ar-hours-times">
+                    <label class="visually-hidden" for="hrFrom1">Tuesday opening time</label>
+                    <input type="time" class="form-control" id="hrFrom1" data-hours-from="1">
+                    <span aria-hidden="true">to</span>
+                    <label class="visually-hidden" for="hrTo1">Tuesday closing time</label>
+                    <input type="time" class="form-control" id="hrTo1" data-hours-to="1">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <span class="ar-hours-closed small text-muted" id="hrClosed1" hidden>Closed</span>
+                </div>
+                <div class="ar-hours-row">
+                  <div class="form-check form-switch ar-hours-day">
+                    <input class="form-check-input" type="checkbox" role="switch" id="hrOpen2" data-hours-open="2">
+                    <label class="form-check-label fw-semibold" for="hrOpen2">Wednesday</label>
+                  </div>
+                  <div class="ar-hours-times">
+                    <label class="visually-hidden" for="hrFrom2">Wednesday opening time</label>
+                    <input type="time" class="form-control" id="hrFrom2" data-hours-from="2">
+                    <span aria-hidden="true">to</span>
+                    <label class="visually-hidden" for="hrTo2">Wednesday closing time</label>
+                    <input type="time" class="form-control" id="hrTo2" data-hours-to="2">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <span class="ar-hours-closed small text-muted" id="hrClosed2" hidden>Closed</span>
+                </div>
+                <div class="ar-hours-row">
+                  <div class="form-check form-switch ar-hours-day">
+                    <input class="form-check-input" type="checkbox" role="switch" id="hrOpen3" data-hours-open="3">
+                    <label class="form-check-label fw-semibold" for="hrOpen3">Thursday</label>
+                  </div>
+                  <div class="ar-hours-times">
+                    <label class="visually-hidden" for="hrFrom3">Thursday opening time</label>
+                    <input type="time" class="form-control" id="hrFrom3" data-hours-from="3">
+                    <span aria-hidden="true">to</span>
+                    <label class="visually-hidden" for="hrTo3">Thursday closing time</label>
+                    <input type="time" class="form-control" id="hrTo3" data-hours-to="3">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <span class="ar-hours-closed small text-muted" id="hrClosed3" hidden>Closed</span>
+                </div>
+                <div class="ar-hours-row">
+                  <div class="form-check form-switch ar-hours-day">
+                    <input class="form-check-input" type="checkbox" role="switch" id="hrOpen4" data-hours-open="4">
+                    <label class="form-check-label fw-semibold" for="hrOpen4">Friday</label>
+                  </div>
+                  <div class="ar-hours-times">
+                    <label class="visually-hidden" for="hrFrom4">Friday opening time</label>
+                    <input type="time" class="form-control" id="hrFrom4" data-hours-from="4">
+                    <span aria-hidden="true">to</span>
+                    <label class="visually-hidden" for="hrTo4">Friday closing time</label>
+                    <input type="time" class="form-control" id="hrTo4" data-hours-to="4">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <span class="ar-hours-closed small text-muted" id="hrClosed4" hidden>Closed</span>
+                </div>
+                <div class="ar-hours-row">
+                  <div class="form-check form-switch ar-hours-day">
+                    <input class="form-check-input" type="checkbox" role="switch" id="hrOpen5" data-hours-open="5">
+                    <label class="form-check-label fw-semibold" for="hrOpen5">Saturday</label>
+                  </div>
+                  <div class="ar-hours-times">
+                    <label class="visually-hidden" for="hrFrom5">Saturday opening time</label>
+                    <input type="time" class="form-control" id="hrFrom5" data-hours-from="5">
+                    <span aria-hidden="true">to</span>
+                    <label class="visually-hidden" for="hrTo5">Saturday closing time</label>
+                    <input type="time" class="form-control" id="hrTo5" data-hours-to="5">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <span class="ar-hours-closed small text-muted" id="hrClosed5" hidden>Closed</span>
+                </div>
+                <div class="ar-hours-row">
+                  <div class="form-check form-switch ar-hours-day">
+                    <input class="form-check-input" type="checkbox" role="switch" id="hrOpen6" data-hours-open="6">
+                    <label class="form-check-label fw-semibold" for="hrOpen6">Sunday</label>
+                  </div>
+                  <div class="ar-hours-times">
+                    <label class="visually-hidden" for="hrFrom6">Sunday opening time</label>
+                    <input type="time" class="form-control" id="hrFrom6" data-hours-from="6">
+                    <span aria-hidden="true">to</span>
+                    <label class="visually-hidden" for="hrTo6">Sunday closing time</label>
+                    <input type="time" class="form-control" id="hrTo6" data-hours-to="6">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <span class="ar-hours-closed small text-muted" id="hrClosed6" hidden>Closed</span>
+                </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="ar-card" aria-labelledby="prefTitle">
+                <div class="ar-card-header"><h2 class="ar-card-title" id="prefTitle">Inventory preference</h2></div>
+                <div class="ar-card-body">
+                  <label class="form-label" for="stLowStock">Default low-stock threshold *</label>
+                  <input type="number" class="form-control" id="stLowStock" min="0" max="1000" step="1" inputmode="numeric" aria-describedby="stLowStockHelp" required>
+                  <div class="invalid-feedback"></div>
+                  <div class="form-text" id="stLowStockHelp">Used as the starting value when you add a new product. Products you already have keep their own thresholds.</div>
+                </div>
+              </section>
+
+              <section class="ar-card" aria-labelledby="profileTitle">
+                <div class="ar-card-header"><h2 class="ar-card-title" id="profileTitle">Admin display profile</h2></div>
+                <div class="ar-card-body">
+                  <div class="ar-profile-preview mb-3">
+                    <span class="ar-avatar ar-avatar-lg" id="prevAvatar" aria-hidden="true"></span>
+                    <div class="min-w-0"><div class="fw-semibold" id="prevAdmin"></div><div class="small text-muted" id="prevTitleText"></div></div>
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-sm-6">
+                      <label class="form-label" for="stAdminName">Display name *</label>
+                      <input type="text" class="form-control" id="stAdminName" maxlength="40" autocomplete="off" required>
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="col-sm-6">
+                      <label class="form-label" for="stAdminTitle">Role or title</label>
+                      <input type="text" class="form-control" id="stAdminTitle" maxlength="40" autocomplete="off">
+                      <div class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                  <p class="form-text mb-0 mt-2">This only changes how your name appears in the top bar. It is not a login or account setting.</p>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div class="ar-savebar" role="region" aria-label="Save settings">
+            <span class="small" id="dirtyMsg" aria-live="polite"></span>
+            <div class="d-flex flex-wrap gap-2 ms-auto">
+              <button type="button" class="btn btn-outline-danger" id="resetDefaults"><i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>Reset to defaults</button>
+              <button type="button" class="btn btn-outline-primary" id="undoChanges">Undo changes</button>
+              <button type="submit" class="btn btn-primary" id="saveSettings"><i class="bi bi-check2 me-1" aria-hidden="true"></i>Save settings</button>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-settings.js"></script>
+</body>
+</html>

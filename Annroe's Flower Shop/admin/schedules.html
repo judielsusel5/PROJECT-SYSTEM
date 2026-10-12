@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schedules | Annroe's Flower Shop Admin</title>
+  <link rel="icon" href="../assets/images/branding/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/theme.css" rel="stylesheet">
+  <link href="../assets/css/admin.css" rel="stylesheet">
+  <link href="../assets/css/responsive.css" rel="stylesheet">
+  <script>
+    try { if (localStorage.getItem('annerore_admin_theme') === 'dark') { document.documentElement.setAttribute('data-theme','dark'); document.documentElement.setAttribute('data-bs-theme','dark'); } } catch (e) {}
+  </script>
+</head>
+<body data-page="schedules" data-title="Schedules">
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
+  <div class="admin-shell">
+    <aside id="adminSidebar" class="admin-sidebar" aria-label="Sidebar"></aside>
+    <div id="sidebarOffcanvas"></div>
+    <div class="admin-main">
+      <header id="adminTopbar"></header>
+      <main id="mainContent" class="admin-content" tabindex="-1">
+        <div id="pageHeader"></div>
+
+        <div class="ar-demo-note" role="note">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          <div>
+            Sample schedules only. A possible conflict flags open orders of the same type on the same date less than 60 minutes apart; it does not check a real calendar, business hours, or travel time.
+          </div>
+        </div>
+
+        <section aria-label="Schedule summary" class="row g-3 mb-4" id="schStats"></section>
+
+        <section class="ar-card" aria-labelledby="schTitle">
+          <div class="ar-card-header">
+            <h2 class="ar-card-title" id="schTitle">Pickup and delivery schedule</h2>
+            <span class="small text-muted" id="schCount" aria-live="polite"></span>
+          </div>
+
+          <form class="ar-filter-bar" role="search" aria-label="Filter schedules" onsubmit="return false">
+            <div class="ar-grow">
+              <label class="form-label" for="schSearch">Search</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+                <input id="schSearch" type="search" class="form-control" placeholder="Order number or customer" autocomplete="off">
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="schView">Show</label>
+              <select id="schView" class="form-select">
+                <option value="all">All schedules</option>
+                <option value="open">Open (not completed)</option>
+                <option value="today">Today</option>
+                <option value="upcoming">Upcoming (next 7 days)</option>
+                <option value="overdue">Overdue</option>
+                <option value="conflicts">Possible conflicts</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="schType">Pickup or delivery</label>
+              <select id="schType" class="form-select"><option value="">All</option><option>Pickup</option><option>Delivery</option></select>
+            </div>
+            <div>
+              <label class="form-label" for="schStatus">Order status</label>
+              <select id="schStatus" class="form-select"><option value="">All statuses</option></select>
+            </div>
+            <div>
+              <label class="form-label" for="schDate">Scheduled date</label>
+              <input id="schDate" type="date" class="form-control">
+            </div>
+            <div>
+              <label class="form-label" for="schSort">Sort by</label>
+              <select id="schSort" class="form-select">
+                <option value="attention">Needs attention first</option>
+                <option value="soonest">Date (earliest first)</option>
+                <option value="latest">Date (latest first)</option>
+              </select>
+            </div>
+            <div class="flex-grow-0">
+              <button type="button" class="btn btn-outline-primary w-100" id="schClear"><i class="bi bi-x-circle me-1" aria-hidden="true"></i>Clear</button>
+            </div>
+          </form>
+
+          <p class="ar-legend-row" aria-label="Row highlights">
+            <span class="ar-badge ar-badge--cancelled">Overdue</span> still open after its scheduled date ·
+            <span class="ar-badge ar-badge--preparing">Today</span> ·
+            <span class="ar-badge ar-badge--ready">Upcoming</span> within 7 days ·
+            <span class="ar-badge ar-badge--low-stock">Possible conflict</span> close to another order
+          </p>
+
+          <div class="ar-table-wrap" id="schTable"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Schedule details -->
+  <div class="modal fade" id="schDetailModal" tabindex="-1" aria-labelledby="schDetailTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="schDetailTitle">Schedule details</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="schDetailBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+          <a class="btn btn-outline-primary" id="schOrderLink" href="orders.html"><i class="bi bi-bag-heart me-1" aria-hidden="true"></i>View order</a>
+          <button type="button" class="btn btn-primary" id="schDetailEdit"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit schedule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit schedule -->
+  <div class="modal fade" id="schEditModal" tabindex="-1" aria-labelledby="schEditTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <form class="modal-content" id="schEditForm" novalidate>
+        <div class="modal-header">
+          <h2 class="modal-title" id="schEditTitle">Edit schedule</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label" for="seOrder">Order</label>
+              <input type="text" class="form-control" id="seOrder" readonly>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="seType">Type</label>
+              <input type="text" class="form-control" id="seType" readonly aria-describedby="seTypeHelp">
+              <div class="form-text" id="seTypeHelp">The type cannot be changed here because it controls the order's status steps.</div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" for="seDate">Scheduled date *</label>
+              <input type="date" class="form-control" id="seDate" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" for="seTime">Scheduled time *</label>
+              <input type="time" class="form-control" id="seTime" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-12" id="seAddressWrap">
+              <label class="form-label" for="seAddress">Delivery address *</label>
+              <input type="text" class="form-control" id="seAddress" maxlength="160" autocomplete="off">
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="seNotes">Notes</label>
+              <textarea class="form-control" id="seNotes" rows="2" maxlength="200"></textarea>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-12"><div class="ar-preview" id="seConflict" aria-live="polite"></div></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save schedule</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-schedules.js"></script>
+</body>
+</html>

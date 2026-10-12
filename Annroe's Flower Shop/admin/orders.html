@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orders | Annroe's Flower Shop Admin</title>
+  <link rel="icon" href="../assets/images/branding/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/theme.css" rel="stylesheet">
+  <link href="../assets/css/admin.css" rel="stylesheet">
+  <link href="../assets/css/responsive.css" rel="stylesheet">
+  <script>
+    try { if (localStorage.getItem('annerore_admin_theme') === 'dark') { document.documentElement.setAttribute('data-theme','dark'); document.documentElement.setAttribute('data-bs-theme','dark'); } } catch (e) {}
+  </script>
+</head>
+<body data-page="orders" data-title="Orders">
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
+  <div class="admin-shell">
+    <aside id="adminSidebar" class="admin-sidebar" aria-label="Sidebar"></aside>
+    <div id="sidebarOffcanvas"></div>
+    <div class="admin-main">
+      <header id="adminTopbar"></header>
+      <main id="mainContent" class="admin-content" tabindex="-1">
+        <div id="pageHeader"></div>
+
+        <div class="ar-demo-note" role="note">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          <div>
+            Sample orders only. <strong>Payments are simulated; no real payment is processed.</strong>
+            Orders move Pending → Confirmed → Preparing → Ready for Pickup or Out for Delivery → Completed. Completed and Cancelled orders are locked, and an order must be marked Paid before it can be completed.
+          </div>
+        </div>
+
+        <section class="ar-card" aria-labelledby="orderListTitle">
+          <div class="ar-card-header">
+            <h2 class="ar-card-title" id="orderListTitle">All orders</h2>
+            <span class="small text-muted" id="orderCount" aria-live="polite"></span>
+          </div>
+
+          <form class="ar-filter-bar" role="search" aria-label="Filter orders" onsubmit="return false">
+            <div class="ar-grow">
+              <label class="form-label" for="ordSearch">Search</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+                <input id="ordSearch" type="search" class="form-control" placeholder="Order number or customer" autocomplete="off">
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="ordStatus">Order status</label>
+              <select id="ordStatus" class="form-select"><option value="">All statuses</option></select>
+            </div>
+            <div>
+              <label class="form-label" for="ordType">Pickup or delivery</label>
+              <select id="ordType" class="form-select">
+                <option value="">All</option><option>Pickup</option><option>Delivery</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="ordDateMode">Date applies to</label>
+              <select id="ordDateMode" class="form-select">
+                <option value="order">Order date</option>
+                <option value="scheduled">Scheduled date</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="ordDate">Date</label>
+              <input id="ordDate" type="date" class="form-control">
+            </div>
+            <div>
+              <label class="form-label" for="ordSort">Sort by</label>
+              <select id="ordSort" class="form-select">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="scheduled">Scheduled soonest</option>
+                <option value="total-desc">Total (high to low)</option>
+              </select>
+            </div>
+            <div class="flex-grow-0">
+              <button type="button" class="btn btn-outline-primary w-100" id="ordClear"><i class="bi bi-x-circle me-1" aria-hidden="true"></i>Clear</button>
+            </div>
+          </form>
+
+          <div class="ar-table-wrap" id="orderTable"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Order details -->
+  <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="orderModalTitle">Order details</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="orderBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="orderPrintBtn"><i class="bi bi-printer me-1" aria-hidden="true"></i>Print summary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable order summary (visible only when printing) -->
+  <div id="printArea" aria-hidden="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-orders.js"></script>
+</body>
+</html>

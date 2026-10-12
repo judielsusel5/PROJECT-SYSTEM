@@ -1,0 +1,70 @@
+/* theme.css — color tokens for light and dark mode.
+   Every main color in the admin system comes from these variables. */
+:root,
+[data-theme="light"] {
+  --ar-bg: #f1e7d6;
+  --ar-bg-glow-1: rgba(185, 120, 138, 0.16);   /* muted rose */
+  --ar-bg-glow-2: rgba(138, 154, 123, 0.18);   /* sage */
+  --ar-surface: rgba(255, 251, 245, 0.74);
+  --ar-surface-solid: #fcf9f4;
+  --ar-surface-2: #f6efe3;
+  --ar-text: #3e2c20;
+  --ar-text-muted: #6f6054;
+  --ar-border: rgba(74, 52, 38, 0.15);
+  --ar-shadow: 0 6px 24px rgba(74, 52, 38, 0.08);
+
+  --ar-primary: #4a3426;
+  --ar-primary-hover: #34241a;
+  --ar-on-primary: #fcf9f4;
+  --ar-rose: #8a4660;          /* text-safe rose (4.5:1+ on its soft tint) */
+  --ar-rose-soft: #ecd3da;
+  --ar-sage: #52653f;          /* text-safe sage */
+  --ar-sage-soft: #dde5d3;
+  --ar-amber: #7d5217;
+  --ar-amber-soft: #f2e0bd;
+  --ar-slate: #4d6575;
+  --ar-slate-soft: #d9e3ea;
+  --ar-danger: #9c3a35;
+  --ar-danger-soft: #f0d5d1;
+  --ar-gray: #5f564d;
+  --ar-gray-soft: #e4ddd3;
+
+  --ar-sidebar-bg: rgba(236, 224, 205, 0.82);
+  --ar-sidebar-active-bg: #4a3426;
+  --ar-sidebar-active-text: #fcf9f4;
+  --ar-focus: #8a4660;
+}
+
+[data-theme="dark"] {
+  --ar-bg: #1d1916;
+  --ar-bg-glow-1: rgba(215, 154, 173, 0.08);
+  --ar-bg-glow-2: rgba(169, 187, 152, 0.07);
+  --ar-surface: rgba(46, 39, 34, 0.78);
+  --ar-surface-solid: #2a231f;
+  --ar-surface-2: #342c26;
+  --ar-text: #efe4d3;
+  --ar-text-muted: #b5a797;
+  --ar-border: rgba(239, 228, 211, 0.15);
+  --ar-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+
+  --ar-primary: #e6d5bd;
+  --ar-primary-hover: #f2e6d3;
+  --ar-on-primary: #2a1f17;
+  --ar-rose: #e0a4b6;
+  --ar-rose-soft: rgba(224, 164, 182, 0.18);
+  --ar-sage: #b3c5a2;
+  --ar-sage-soft: rgba(179, 197, 162, 0.17);
+  --ar-amber: #e6c27f;
+  --ar-amber-soft: rgba(230, 194, 127, 0.17);
+  --ar-slate: #a6c0d1;
+  --ar-slate-soft: rgba(166, 192, 209, 0.16);
+  --ar-danger: #eba19b;
+  --ar-danger-soft: rgba(235, 161, 155, 0.17);
+  --ar-gray: #c3b8aa;
+  --ar-gray-soft: rgba(195, 184, 170, 0.15);
+
+  --ar-sidebar-bg: rgba(36, 30, 26, 0.88);
+  --ar-sidebar-active-bg: #e6d5bd;
+  --ar-sidebar-active-text: #2a1f17;
+  --ar-focus: #e0a4b6;
+}

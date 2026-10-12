@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Products | Annroe's Flower Shop Admin</title>
+  <link rel="icon" href="../assets/images/branding/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/theme.css" rel="stylesheet">
+  <link href="../assets/css/admin.css" rel="stylesheet">
+  <link href="../assets/css/responsive.css" rel="stylesheet">
+  <script>
+    try { if (localStorage.getItem('annerore_admin_theme') === 'dark') { document.documentElement.setAttribute('data-theme','dark'); document.documentElement.setAttribute('data-bs-theme','dark'); } } catch (e) {}
+  </script>
+</head>
+<body data-page="products" data-title="Products">
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
+  <div class="admin-shell">
+    <aside id="adminSidebar" class="admin-sidebar" aria-label="Sidebar"></aside>
+    <div id="sidebarOffcanvas"></div>
+    <div class="admin-main">
+      <header id="adminTopbar"></header>
+      <main id="mainContent" class="admin-content" tabindex="-1">
+        <div id="pageHeader"></div>
+
+        <div class="ar-demo-note" role="note">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          <div>Saved in this browser only. Products marked "Price to be confirmed" still need owner pricing.</div>
+        </div>
+
+        <section class="ar-card" aria-labelledby="productListTitle">
+          <div class="ar-card-header">
+            <h2 class="ar-card-title" id="productListTitle">All products</h2>
+            <span class="small text-muted" id="resultCount" aria-live="polite"></span>
+          </div>
+
+          <form class="ar-filter-bar" id="filterBar" role="search" aria-label="Filter products" onsubmit="return false">
+            <div class="ar-grow">
+              <label class="form-label" for="searchInput">Search</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+                <input id="searchInput" type="search" class="form-control" placeholder="Name, ID, flower or color" autocomplete="off">
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="categoryFilter">Category</label>
+              <select id="categoryFilter" class="form-select"></select>
+            </div>
+            <div>
+              <label class="form-label" for="availabilityFilter">Availability</label>
+              <select id="availabilityFilter" class="form-select">
+                <option value="">All</option>
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="sortSelect">Sort by</label>
+              <select id="sortSelect" class="form-select">
+                <option value="name-asc">Name (A–Z)</option>
+                <option value="name-desc">Name (Z–A)</option>
+                <option value="price-asc">Price (low to high)</option>
+                <option value="price-desc">Price (high to low)</option>
+              </select>
+            </div>
+            <div class="flex-grow-0">
+              <button type="button" class="btn btn-outline-primary w-100" id="clearFilters"><i class="bi bi-x-circle me-1" aria-hidden="true"></i>Clear</button>
+            </div>
+          </form>
+
+          <div class="ar-table-wrap" id="productTable"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Add / Edit product -->
+  <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <form class="modal-content" id="productForm" novalidate>
+        <div class="modal-header">
+          <h2 class="modal-title" id="productModalTitle">Add product</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="small text-muted">Fields marked with <span aria-hidden="true">*</span><span class="visually-hidden">an asterisk</span> are required.</p>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label" for="pfId">Product ID</label>
+              <input type="text" class="form-control" id="pfId" value="Auto-generated" readonly>
+            </div>
+            <div class="col-md-8">
+              <label class="form-label" for="pfName">Product name *</label>
+              <input type="text" class="form-control" id="pfName" maxlength="80" autocomplete="off" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="pfCategory">Category *</label>
+              <select class="form-select" id="pfCategory" required></select>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="pfFlower">Flower type *</label>
+              <input type="text" class="form-control" id="pfFlower" list="flowerTypeList" maxlength="60" autocomplete="off" required>
+              <datalist id="flowerTypeList"></datalist>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="pfColor">Color *</label>
+              <input type="text" class="form-control" id="pfColor" maxlength="60" autocomplete="off" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="pfAvailability">Availability *</label>
+              <select class="form-select" id="pfAvailability" required>
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
+              </select>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="pfDescription">Description *</label>
+              <textarea class="form-control" id="pfDescription" rows="3" maxlength="500" required></textarea>
+              <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="col-12">
+              <fieldset class="ar-fieldset">
+                <legend class="ar-legend">Pricing</legend>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" id="pfPriceTbc">
+                  <label class="form-check-label" for="pfPriceTbc">Price to be confirmed (owner has not confirmed a price yet)</label>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label" for="pfPrice">Price (₱) *</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text">₱</span>
+                      <input type="number" class="form-control" id="pfPrice" min="0" step="0.01" inputmode="decimal" aria-describedby="pfPriceHelp">
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-text" id="pfPriceHelp">Starting or single-item price.</div>
+                  </div>
+                </div>
+                <div id="optionsSection" class="mt-3">
+                  <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                    <span class="form-label mb-0" id="optionsLabel">Size and price options (optional)</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="addOptionBtn"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Add option</button>
+                  </div>
+                  <div id="optionRows" role="group" aria-labelledby="optionsLabel"></div>
+                  <div class="invalid-feedback d-block" id="optionsError" hidden></div>
+                  <p class="form-text mb-0" id="optionsHelp">Example: "6 stems", 6, 2000. When options exist, the price above is set automatically to the lowest option.</p>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label" for="pfStock">Stock quantity *</label>
+              <input type="number" class="form-control" id="pfStock" min="0" step="1" inputmode="numeric" aria-describedby="pfStockHelp" required>
+              <div class="invalid-feedback"></div>
+              <div class="form-text" id="pfStockHelp">Changing this records a stock adjustment in the inventory history.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="pfThreshold">Low stock threshold *</label>
+              <input type="number" class="form-control" id="pfThreshold" min="0" step="1" inputmode="numeric" required>
+              <div class="invalid-feedback"></div>
+              <div class="form-text">A low-stock alert shows at or below this number.</div>
+            </div>
+
+            <div class="col-12">
+              <fieldset class="ar-fieldset">
+                <legend class="ar-legend">Image</legend>
+                <div class="row g-3 align-items-start">
+                  <div class="col-auto"><div class="ar-img-preview" id="imgPreview" aria-live="polite"></div></div>
+                  <div class="col">
+                    <label class="form-label" for="pfPhotoChoice">Use a shop photo</label>
+                    <select class="form-select mb-2" id="pfPhotoChoice"></select>
+                    <label class="form-label" for="pfPhotoUpload">Or upload your own (JPG, PNG or WebP)</label>
+                    <input type="file" class="form-control" id="pfPhotoUpload" accept="image/jpeg,image/png,image/webp">
+                    <div class="invalid-feedback" id="photoError"></div>
+                    <div class="form-text">Uploads are resized and kept in this browser only.</div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveProductBtn">Save product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View details -->
+  <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="viewModalTitle">Product details</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="viewBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="viewEditBtn"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit product</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-products.js"></script>
+</body>
+</html>
