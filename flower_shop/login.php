@@ -67,10 +67,16 @@
     <div class="welcome">
       <svg class="tick" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M14 27l8 8 16-17"/></svg>
       <h2 id="wh">Welcome</h2>
-      <p id="wp">You are logged in.</p>
-      <a class="contbtn" href="index.php#best">SEE BEST SELLERS</a>
-      <a class="contbtn" id="dash" href="admin.php" style="display:none">DASHBOARD</a>
-      <button class="loginbtn out" id="out" type="button">LOG OUT</button>
+      <p class="wsub" id="wp">You are logged in to your account.</p>
+      <dl class="wdetails">
+        <div><dt>Name</dt><dd id="wn"></dd></div>
+        <div><dt>Email</dt><dd id="we"></dd></div>
+      </dl>
+      <div class="wactions">
+        <a class="contbtn" href="products.php">CONTINUE SHOPPING</a>
+        <a class="contbtn alt" id="dash" href="admin.php" style="display:none">DASHBOARD</a>
+        <button class="loginbtn out" id="out" type="button">LOG OUT</button>
+      </div>
     </div>
   </section>
 
@@ -85,6 +91,20 @@
   const A = $("auth"), RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const titles = { login: "Login", register: "Create an account", welcome: "Welcome" };
   const wait = ms => new Promise(r => setTimeout(r, ms));
+
+  /* after logging in / registering, go back to the page the customer came from (or the homepage) */
+  const NK = "annroe_next", here = u => !/\/login\.php$/.test(u.pathname);
+  try { if (document.referrer) { const u = new URL(document.referrer); if (u.origin === location.origin && here(u)) sessionStorage.setItem(NK, u.href); } } catch (e) {}
+  function goBack() {
+    let to = "index.php";
+    try {
+      const q = new URLSearchParams(location.search).get("next");
+      const cand = q ? new URL(q, location.href) : (sessionStorage.getItem(NK) ? new URL(sessionStorage.getItem(NK)) : null);
+      if (cand && cand.origin === location.origin && here(cand)) to = cand.href;
+      sessionStorage.removeItem(NK);
+    } catch (e) {}
+    location.replace(to);
+  }
 
   function show(v) {
     A.dataset.view = v;
@@ -113,7 +133,7 @@
     $("dash").style.display = s.role === "admin" ? "" : "none";
     Account.updateHeader(); show("welcome");
     $("wh").textContent = "Welcome, " + s.name.split(" ")[0] + "!";
-    $("wp").textContent = "You are logged in as " + s.email + ".";
+    $("wn").textContent = s.name; $("we").textContent = s.email;
   }
 
   /* switch views */
@@ -143,7 +163,7 @@
     }
     done(btn, "Logged in");
     await wait(700);
-    e.target.reset(); welcome(); idle(btn, label);
+    e.target.reset(); goBack();
   });
 
   /* register */
@@ -166,7 +186,7 @@
     await Account.login(em, pw);
     done(btn, "Account created");
     await wait(800);
-    e.target.reset(); welcome(); idle(btn, label);
+    e.target.reset(); goBack();
   });
 
   /* logout */

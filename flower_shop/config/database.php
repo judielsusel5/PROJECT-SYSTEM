@@ -89,6 +89,7 @@ function get_products(?mysqli $conn): array
             if ((int)$r['sold_out'] === 1) { $item['so'] = 1; }
             if (!empty($r['best_seller'])) { $item['b'] = 1; }
             if (!empty($r['note'])) { $item['d'] = $r['note']; }
+            if (isset($r['occasion']) && $r['occasion'] !== '') { $item['oc'] = $r['occasion']; }   // optional, see products_occasion.sql
             if (!empty($r['category'])) { $item['k'] = $r['category']; }   // optional, see products_update.sql
             if (!empty($r['image'])) { $item['m'] = $r['image']; }   // optional picture path, see products_update.sql
             if (!empty($r['slideshow_quote'])) { $item['q'] = $r['slideshow_quote']; }   // optional, see products_update.sql

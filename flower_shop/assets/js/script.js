@@ -18,7 +18,7 @@ const EV="annroe_events",day=n=>new Date(Date.now()-n*864e5).toISOString().slice
 const demoEv=()=>{const e={};for(let i=0;i<7;i++)e[day(i)]={visits:40+(i*7)%23,carts:8+(i*3)%9};return e};
 const api={days:()=>[6,5,4,3,2,1,0].map(day),events:()=>rd(EV,null)||demoEv(),
 track(t){const e=api.events(),k=day(0);e[k]=e[k]||{visits:0,carts:0};e[k][t]++;wr(EV,e)},products:()=>rd(P,(window.PRODUCTS&&window.PRODUCTS.length)?window.PRODUCTS:seed),saveProducts:v=>wr(P,v),orders:()=>rd(O,demo),saveOrders:v=>wr(O,v),
-addOrder(u,cart){const o=api.orders();o.unshift({id:"A"+(1001+o.length),date:new Date().toISOString().slice(0,10),name:u.name,email:u.email,items:cart.map(x=>x.n),total:cart.reduce((s,x)=>s+x.p,0),status:"Pending"});wr(O,o)}};
+addOrder(u,cart,info){const o=api.orders(),oid="A"+(1001+o.length);o.unshift({id:oid,date:new Date().toISOString().slice(0,10),name:u.name,email:u.email,items:cart.map(x=>x.n),total:cart.reduce((s,x)=>s+x.p,0),status:"Pending",info:info||null});wr(O,o);return oid}};
 return api})();
 
 /* ---- Account (login session, header) ---- */
@@ -63,7 +63,7 @@ const colorsOf=i=>{const t=(i.n+" "+(i.d||"")).toLowerCase();return COLORS.filte
 const items=showAll?all:(()=>{const b=all.filter(i=>i.b);return(b.length?b:all).slice(0,4)})();
 grid.classList.add(showAll?"full":"compact");
 grid.innerHTML=items.map(i=>{const v=i.v&&i.v.length?i.v:null;
-return `<div class="p" data-colors="${colorsOf(i).join(",")}"><div class="img" style="background:${esc(i.c||"#ecd5bd")}">${flowerPic(i)}${i.t?`<span class="tag ${i.so?"so":""}">${esc(i.t)}</span>`:""}</div><h3>${esc(i.n)}</h3><div class="price">${v?`<small class="from">From</small> `:""}${i.o?`<s>${f(i.o)}</s>`:""}${f(i.p)}</div>${showAll&&v?`<ul class="opts">${v.map(o=>`<li><span>${esc(o[0])}</span><b>${fo(o[1])}</b></li>`).join("")}</ul>`:""}${showAll&&i.d?`<p class="note">${esc(i.d)}</p>`:""}${i.so?`<button class="add" disabled>Sold out</button>`:`<a class="add" href="index.php#contact">Inquire now</a>`}</div>`}).join("");
+return `<div class="p" data-colors="${colorsOf(i).join(",")}"><div class="img" style="background:${esc(i.c||"#ecd5bd")}">${flowerPic(i)}${i.t?`<span class="tag ${i.so?"so":""}">${esc(i.t)}</span>`:""}</div><h3>${esc(i.n)}</h3><div class="price">${v?`<small class="from">From</small> `:""}${i.o?`<s>${f(i.o)}</s>`:""}${f(i.p)}</div>${showAll&&v?`<ul class="opts">${v.map(o=>`<li><span>${esc(o[0])}</span><b>${fo(o[1])}</b></li>`).join("")}</ul>`:""}${showAll&&i.d?`<p class="note">${esc(i.d)}</p>`:""}${i.so?`<button class="add" disabled>Sold out</button>`:`<div class="p-actions"><button type="button" class="add buy" data-act="buy" data-id="${esc(i.id)}">Buy now</button><button type="button" class="add" data-act="cart" data-id="${esc(i.id)}">Add to cart</button></div>`}</div>`}).join("");
 if(showAll){
  /* shared filter state: color chips + navbar search */
  const flt=window.__flt={q:"",c:""};
@@ -104,7 +104,7 @@ const titleOf=i=>i.n.replace(/\s*\([^)]*\)/g,"").trim();   /* "Gerbera Bouquet (
 const flowers=Store.products().filter(i=>!i.so&&i.s!==0);   /* available (not sold out) and not hidden from the slideshow */
 flowers.forEach(i=>{
  const el=document.createElement("div");el.className="about aslide";
- el.innerHTML=`<div class="about-card fcard"><div class="fcircle" style="background:${esc(i.c||"#ecd5bd")}">${flowerPic(i)}</div></div><div class="about-txt"><h2 class="left">${esc(titleOf(i))}</h2><blockquote class="fq">${esc(quoteOf(i))}</blockquote><p>${esc(descOf(i))}</p><a class="btn" href="#contact">Inquire now</a></div>`;
+ el.innerHTML=`<div class="about-card fcard"><div class="fcircle" style="background:${esc(i.c||"#ecd5bd")}">${flowerPic(i)}</div></div><div class="about-txt"><h2 class="left">${esc(titleOf(i))}</h2><blockquote class="fq">${esc(quoteOf(i))}</blockquote><p>${esc(descOf(i))}</p><div class="sl-actions"><button type="button" class="btn" data-act="buy" data-id="${esc(i.id)}">Buy now</button><button type="button" class="btn ghost" data-act="cart" data-id="${esc(i.id)}">Add to cart</button></div></div>`;
  wrap.appendChild(el)});
 const slides=[...wrap.children];
 /* decoration: dashed ring + two orbiting dots around every round picture, faint flower behind the story text */
@@ -173,6 +173,26 @@ const run=()=>{sec.classList.add("in");
   const tick=t=>{const k=Math.min(1,(t-t0)/1400),e=1-Math.pow(1-k,3);counter.textContent=Math.round(from+(end-from)*e);if(k<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}};
 if(!("IntersectionObserver" in window)||matchMedia("(prefers-reduced-motion:reduce)").matches){sec.classList.add("in");return}
 new IntersectionObserver((en,o)=>{en.forEach(x=>{if(x.isIntersecting){run();o.disconnect()}})},{threshold:.3}).observe(sec);
+})();
+
+/* ---- Loading popup shown while opening the "All flowers" page (same tab) ---- */
+(() => {
+const links=[...document.querySelectorAll('a[href^="products.php"]')];
+if(!links.length)return;
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+let ov=null;
+const build=()=>{ov=document.createElement("div");ov.className="pgload";ov.setAttribute("role","status");ov.setAttribute("aria-live","polite");
+ ov.innerHTML='<div class="pgload-box"><span class="pgload-ring" aria-hidden="true"></span><b class="pgload-title"></b><span class="pgload-sub">Please wait a moment</span><span class="pgload-bar" aria-hidden="true"><i></i></span></div>';
+ document.body.appendChild(ov)};
+const hide=()=>{if(ov)ov.classList.remove("on");document.body.classList.remove("is-loading")};
+links.forEach(a=>a.addEventListener("click",e=>{
+ if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||a.target==="_blank")return;
+ e.preventDefault();
+ if(!ov)build();
+ ov.querySelector(".pgload-title").textContent=a.dataset.loading||"Opening all flowers…";
+ void ov.offsetWidth;ov.classList.add("on");document.body.classList.add("is-loading");
+ const href=a.href;setTimeout(()=>{location.href=href},reduce?150:900)}));
+window.addEventListener("pageshow",hide);   /* coming back with the Back button: close the popup */
 })();
 
 /* ---- Dropdown menus ---- */

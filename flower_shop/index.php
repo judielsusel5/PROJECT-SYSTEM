@@ -11,17 +11,17 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Annroe's Flower Shop</title>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=<?= @filemtime(__DIR__ . '/assets/css/style.css') ?: 1 ?>">
 </head><body>
 <div class="topbar" id="top"><span>&#9742; Our phone number: (+63) 000 000 0000</span><div class="toplinks"><a href="#contact">Contact us</a><a href="login.php">My account</a></div></div>
 <header class="top">
  <div class="brand">
- <a class="logo" href="#top"><img src="assets/image/logo.jpg" alt="Annroe's Flower Shop"></a>
+  <a class="logo" href="#top"><img src="assets/image/logo.jpg" alt="Annroe's Flower Shop"></a>
   <p class="tagline">Hand-arranged flowers,<br>made with love.</p>
  </div>
- <div class="acct"><a class="cta" href="#best">Order now</a><a href="login.php">Login / Register</a></div>
+ <div class="acct"><a class="cta" href="products.php" data-loading="Opening all flowers…">Order now</a><button type="button" class="cartbtn" id="cartBtn" aria-label="Open cart"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="cartn" hidden>0</span></button><a href="login.php">Login / Register</a></div>
 </header>
-<nav><a href="#top">HOME</a><a href="#about">ABOUT</a><div class="dd"><a href="#contact" aria-haspopup="true" aria-expanded="false">OCCASIONS<i class="chev"></i></a><ul><li><a href="#contact">Valentines Flowers</a></li><li><a href="#contact">Anniversary Flowers</a></li><li><a href="#contact">Mother's Day Flowers</a></li><li><a href="#contact">Father's Day Gifts</a></li><li><a href="#contact">Birthday Flowers</a></li><li><a href="#contact">Funeral Flowers</a></li><li><a href="#contact">Inaugural Flowers</a></li><li><a href="#contact">Get Well Soon Flowers</a></li><li><a href="#contact">Memorial / All Soul's Day / All Saint's Day Flowers</a></li><li><a href="#contact">Congratulations Flowers</a></li></ul></div><div class="dd"><a href="products.php" aria-haspopup="true" aria-expanded="false">FLOWERS<i class="chev"></i></a><ul><li><a href="products.php">All Flowers</a></li><li><a href="products.php?cat=roses">Roses Bouquet</a></li><li><a href="products.php?cat=carnations">Carnation Bouquet</a></li><li><a href="products.php?cat=tulips">Tulips Bouquet</a></li><li><a href="products.php?cat=lisianthus">Lisianthus Bouquet</a></li><li><a href="products.php?cat=gerbera">Gerbera Bouquet</a></li></ul></div><a href="#best">BEST SELLERS</a><a href="#contact">CONTACT</a><div class="nsearch" id="nsearch"><button type="button" class="ns-btn" aria-label="Open search" aria-expanded="false" aria-controls="nsq"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><form class="ns-form" role="search" action="products.php" method="get"><input id="nsq" name="q" type="search" placeholder="Search flowers..." autocomplete="off" aria-label="Search flowers" tabindex="-1"><kbd>Ctrl K</kbd><button type="button" class="ns-x" aria-label="Close search" tabindex="-1">&times;</button></form></div></nav>
+<nav><a href="#top">HOME</a><a href="#about">ABOUT</a><div class="dd"><a href="#contact" aria-haspopup="true" aria-expanded="false">OCCASIONS<i class="chev"></i></a><ul><li><a href="products.php?occasion=valentines">Valentines Flowers</a></li><li><a href="products.php?occasion=anniversary">Anniversary Flowers</a></li><li><a href="products.php?occasion=mothers-day">Mother's Day Flowers</a></li><li><a href="products.php?occasion=fathers-day">Father's Day Gifts</a></li><li><a href="products.php?occasion=birthday">Birthday Flowers</a></li><li><a href="products.php?occasion=funeral">Funeral Flowers</a></li><li><a href="products.php?occasion=inaugural">Inaugural Flowers</a></li><li><a href="products.php?occasion=get-well-soon">Get Well Soon Flowers</a></li><li><a href="products.php?occasion=memorial">Memorial / All Soul's Day / All Saint's Day Flowers</a></li><li><a href="products.php?occasion=congratulations">Congratulations Flowers</a></li></ul></div><div class="dd"><a href="products.php" aria-haspopup="true" aria-expanded="false">FLOWERS<i class="chev"></i></a><ul><li><a href="products.php">All Flowers</a></li><li><a href="products.php?cat=roses">Roses Bouquet</a></li><li><a href="products.php?cat=carnations">Carnation Bouquet</a></li><li><a href="products.php?cat=tulips">Tulips Bouquet</a></li><li><a href="products.php?cat=lisianthus">Lisianthus Bouquet</a></li><li><a href="products.php?cat=gerbera">Gerbera Bouquet</a></li><li><a href="products.php?customize=1">Customize a Bouquet</a></li><li><a href="products.php?customize=money">Money Bouquet</a></li></ul></div><a href="#best">BEST SELLERS</a><a href="#contact">CONTACT</a><div class="nsearch" id="nsearch"><button type="button" class="ns-btn" aria-label="Open search" aria-expanded="false" aria-controls="nsq"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><form class="ns-form" role="search" action="products.php" method="get"><input id="nsq" name="q" type="search" placeholder="Search flowers..." autocomplete="off" aria-label="Search flowers" tabindex="-1"><kbd>Ctrl K</kbd><button type="button" class="ns-x" aria-label="Close search" tabindex="-1">&times;</button></form></div></nav>
 
 <div class="hero"><div class="card">
   <span class="eyebrow">Annroe's Flower Shop</span>
@@ -70,7 +70,7 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
     <h2 class="left reveal">Our best sellers</h2>
     <p class="sub reveal">Hand-arranged bouquets our customers love</p>
     <div class="grid" id="grid"></div>
-    <div class="more reveal"><a class="btn" href="products.php" target="_blank" rel="noopener">View all flowers &#8599;</a></div>
+    <div class="more reveal"><a class="btn" href="products.php" data-loading="Opening all flowers…">Shop now</a></div>
   </div>
 
  </div>
@@ -102,5 +102,8 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 <?php endif; ?>
 </footer>
 <script>window.PRODUCTS = <?= json_encode($products, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;</script>
-<script src="assets/js/script.js"></script>
+<script src="assets/js/script.js?v=<?= @filemtime(__DIR__ . '/assets/js/script.js') ?: 1 ?>"></script>
+<script src="assets/js/shop.js?v=<?= @filemtime(__DIR__ . '/assets/js/shop.js') ?: 1 ?>"></script>
+<script src="assets/js/customize.js?v=<?= @filemtime(__DIR__ . '/assets/js/customize.js') ?: 1 ?>"></script>
+<script src="assets/js/catalog.js?v=<?= @filemtime(__DIR__ . '/assets/js/catalog.js') ?: 1 ?>"></script>
 </body></html>
