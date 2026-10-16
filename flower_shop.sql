@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 13, 2026 at 02:37 PM
+-- Generation Time: Oct 16, 2026 at 06:58 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -53,7 +53,7 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`id`, `name`, `price`, `old_price`, `emoji`, `color`, `tag`, `sold_out`, `note`, `best_seller`, `in_slideshow`, `slideshow_quote`, `slideshow_description`, `image`, `category`, `occasion`) VALUES
 (1, 'Imported Rose Bouquet (red)', 500.00, NULL, '🌸', '#ecd5bd', NULL, 0, 'Imported red roses', 1, 1, 'Red roses say what words sometimes can\'t.', 'Hand-arranged imported roses, a classic way to say I love you, congratulations or thank you.', NULL, 'Roses', NULL),
 (2, 'Carnation Bouquet (pink)', 250.00, NULL, '🌸', '#efe0c6', NULL, 0, 'Pink carnations', 1, 1, 'Soft, ruffled and full of gentle affection.', 'Fresh, long-lasting blooms with soft ruffled petals, a sweet and affordable gift for any occasion.', NULL, 'Carnations', NULL),
-(3, 'Tulips Bouquet (pink)', 500.00, NULL, '🌸', '#e8d6c0', NULL, 0, 'Blue tulips: add ₱100 per stem', 1, 1, 'Simple elegance that brings spring into any room.', 'Elegant, graceful stems arranged by hand to bring a fresh touch of spring to any home or celebration.', NULL, 'Tulips', NULL),
+(3, 'Tulips Bouquet (pink)', 500.00, NULL, '🌸', '#e8d6c0', NULL, 0, 'Pink, red, white or purple tulips. Blue tulips: add ₱100 per stem', 1, 1, 'Simple elegance that brings spring into any room.', 'Elegant, graceful stems arranged by hand to bring a fresh touch of spring to any home or celebration.', NULL, 'Tulips', NULL),
 (4, 'Lisianthus Bouquet (pink or violet)', 600.00, NULL, '🌸', '#e2dcc8', NULL, 0, 'Available in pink or violet', 1, 1, 'Graceful blooms for the moments that deserve something special.', 'Delicate, rose-like blooms that make a refined gift for birthdays, anniversaries and special moments.', NULL, 'Lisianthus', NULL),
 (5, 'Gerbera Bouquet (pink, yellow, white)', 250.00, NULL, '🌸', '#e2e0c4', NULL, 0, 'Choose pink, yellow or white', 0, 1, 'Bright, cheerful faces that turn any day into a happy one.', 'Cheerful, daisy-like flowers that brighten any room and bring instant smiles.', NULL, 'Gerbera', NULL);
 
@@ -102,6 +102,20 @@ INSERT INTO `product_options` (`id`, `product_id`, `label`, `price`, `sort_order
 (24, 5, '6\'s', 1200.00, 4),
 (25, 5, '12\'s', 2400.00, 5);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(80) NOT NULL,
+  `email` varchar(190) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -120,6 +134,13 @@ ALTER TABLE `product_options`
   ADD KEY `product_id` (`product_id`);
 
 --
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_users_email` (`email`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -134,6 +155,12 @@ ALTER TABLE `products`
 --
 ALTER TABLE `product_options`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
