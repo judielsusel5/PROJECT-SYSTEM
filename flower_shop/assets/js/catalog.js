@@ -38,7 +38,7 @@ const state={
 const labelStems=l=>{const m=/(\d+)/.exec(l);if(m)return +m[1];l=String(l).toLowerCase();return /dozen/.test(l)?12:/double|two/.test(l)?2:/three/.test(l)?3:/four/.test(l)?4:/five/.test(l)?5:/six/.test(l)?6:1};
 const SIZE_OF=n=>n<=7?0:n<=15?1:n<=30?2:3;
 const defStems=i=>{const s=(i.v||[]).map(o=>labelStems(o[0])).filter(n=>n>=3&&n<=8).sort((a,b)=>b-a);return s[0]||5};
-const defCol=i=>i._c[0]||"";
+const defCol=i=>{const n=String(i.n||"").toLowerCase();return i._c.find(c=>{const k=COLORS.find(x=>x[0]===c);return k&&new RegExp("\\b("+k[1]+")").test(n)})||i._c[0]||""};   // start on the color named in the product title, else the first color
 const sur=(i,col)=>{const c=COLORS.find(x=>x[0]===col);if(!c)return 0;const m=new RegExp("("+c[1]+")[^+.]*?(?:\\+|add)\\s*₱?\\s*(\\d+)","i").exec(i.d||"");return m?+m[2]:0};
 const byId=id=>data.find(i=>String(i.id)===String(id));
 const card=(i,k)=>{
@@ -190,5 +190,28 @@ if(home){
   c.addEventListener("click",e=>{if(e.target.closest("[data-act],a"))return;open()});
   img.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}})})};
  if(window.CZ3D)wire();else window.addEventListener("load",wire,{once:true});
+}
+
+/* ---- homepage slideshow: a photo of the bouquet inside every round frame (instead of the empty picture icon) ----
+   photos live in assets/image/: bouquet-rose, bouquet-carnation, bouquet-tulips, bouquet-lisianthus, bouquet-gerbera (.webp).
+   A product with its own picture (image column) keeps it; a product with no photo here gets the 3D bouquet instead. */
+const slideBox=document.getElementById("featured");
+if(slideBox){
+ const PHOTO=[["rose","bouquet-rose"],["carnation","bouquet-carnation"],["tulip","bouquet-tulips"],["lisianthus","bouquet-lisianthus"],["gerbera","bouquet-gerbera"]];
+ const photoOf=i=>{const n=String(i.n||"").toLowerCase(),m=PHOTO.find(p=>n.includes(p[0]));return m?((window.__FLOWER_IMGS||{})[m[1]]||("assets/image/"+m[1]+".webp")):""};
+ const live=(ph,i)=>{const cv=document.createElement("canvas");cv.className="sl-cv";cv.setAttribute("aria-hidden","true");ph.replaceWith(cv);new Prev(cv,i,defCol(i),defStems(i),{pitch:26})};
+ const fill=()=>{
+  slideBox.querySelectorAll(".fcircle .ph,.pk-circle .ph").forEach(ph=>{
+   const host=ph.parentElement;let i=null;
+   const sl=host.closest(".aslide"),b=sl&&sl.querySelector("[data-id]");
+   if(b)i=byId(b.dataset.id);
+   else{const nm=host.parentElement&&host.parentElement.querySelector(".pk-name");if(nm){const t=nm.textContent.trim();i=data.find(x=>x._t===t)}}
+   if(!i||i.m)return;
+   const src=photoOf(i);
+   if(src){const im=new Image();im.className="pic";im.alt=i._t||"";im.src=src;im.onerror=()=>{if(window.CZ3D&&im.isConnected)live(im,i)};ph.replaceWith(im)}
+   else if(window.CZ3D)live(ph,i)})};
+ fill();
+ window.addEventListener("load",fill,{once:true});
+ new MutationObserver(fill).observe(slideBox,{childList:true,subtree:true});
 }
 })();

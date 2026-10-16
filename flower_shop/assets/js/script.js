@@ -11,7 +11,7 @@ window.flowerPic=(i,alt)=>{
 window.Store=(()=>{const P="annroe_products",O="annroe_orders";
 const rd=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
 const wr=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-const seed=[{"id":1,"n":"Imported Rose Bouquet (red)","p":500,"e":"🌹","c":"#ecd5bd","d":"Imported red roses","b":1,"v":[["Single",500],["3 stems",1000],["6 stems",2000],["12 stems",3500]]},{"id":2,"n":"Carnation Bouquet (pink)","p":250,"e":"🌸","c":"#efe0c6","d":"Pink carnations","b":1,"v":[["Single",250],["3 stems",600],["6 stems",1200],["8 stems",1600],["10 stems",1800],["12 stems",2200]]},{"id":3,"n":"Tulips Bouquet (pink)","p":500,"e":"🌷","c":"#e8d6c0","d":"Blue tulips: add ₱100 per stem","b":1,"v":[["Single",500],["Double",900],["Three's",1300],["6's",2400],["12's",4800],["24's",8000]]},{"id":4,"n":"Lisianthus Bouquet (pink or violet)","p":600,"e":"💐","c":"#e2dcc8","d":"Available in pink or violet","b":1,"v":[["2 stems",600],["3 stems",800],["6 stems",1500],["12 stems",2500]]},{"id":5,"n":"Gerbera Bouquet (pink, yellow, white)","p":250,"e":"🌼","c":"#e2e0c4","d":"Choose pink, yellow or white","v":[["Single",250],["3's",600],["4's",750],["6's",1200],["12's",2400]]}];
+const seed=[{"id":1,"n":"Imported Rose Bouquet (red)","p":500,"e":"🌹","c":"#ecd5bd","d":"Imported red roses","b":1,"v":[["Single",500],["3 stems",1000],["6 stems",2000],["12 stems",3500]]},{"id":2,"n":"Carnation Bouquet (pink)","p":250,"e":"🌸","c":"#efe0c6","d":"Pink carnations","b":1,"v":[["Single",250],["3 stems",600],["6 stems",1200],["8 stems",1600],["10 stems",1800],["12 stems",2200]]},{"id":3,"n":"Tulips Bouquet (pink)","p":500,"e":"🌷","c":"#e8d6c0","d":"Pink, red, white or purple tulips. Blue tulips: add ₱100 per stem","b":1,"v":[["Single",500],["Double",900],["Three's",1300],["6's",2400],["12's",4800],["24's",8000]]},{"id":4,"n":"Lisianthus Bouquet (pink or violet)","p":600,"e":"💐","c":"#e2dcc8","d":"Available in pink or violet","b":1,"v":[["2 stems",600],["3 stems",800],["6 stems",1500],["12 stems",2500]]},{"id":5,"n":"Gerbera Bouquet (pink, yellow, white)","p":250,"e":"🌼","c":"#e2e0c4","d":"Choose pink, yellow or white","v":[["Single",250],["3's",600],["4's",750],["6's",1200],["12's",2400]]}];
 const demo=[{id:"A1001",date:"2026-10-01",name:"Maria Santos",email:"maria@mail.com",items:["1 Dozen Pink Roses Round Bouquet"],total:2300,status:"Delivered"},
 {id:"A1002",date:"2026-10-04",name:"Jun Dela Cruz",email:"jun@mail.com",items:["1 Dozen Imported Red Roses with Heart Pillow"],total:2900,status:"Preparing"}];
 const EV="annroe_events",day=n=>new Date(Date.now()-n*864e5).toISOString().slice(0,10);
@@ -21,30 +21,35 @@ track(t){const e=api.events(),k=day(0);e[k]=e[k]||{visits:0,carts:0};e[k][t]++;w
 addOrder(u,cart,info){const o=api.orders(),oid="A"+(1001+o.length);o.unshift({id:oid,date:new Date().toISOString().slice(0,10),name:u.name,email:u.email,items:cart.map(x=>x.n),total:cart.reduce((s,x)=>s+x.p,0),status:"Pending",info:info||null});wr(O,o);return oid}};
 return api})();
 
-/* ---- Account (login session, header) ---- */
+/* ---- Account (login session, header) ----
+   Accounts are stored in MySQL (table `users`) and the login is a PHP session, both handled by api/auth.php.
+   Each PHP page fills window.SESSION, so the header is correct from the first paint. */
 window.Account=(()=>{
-const U="annroe_users",S="annroe_session";
-const read=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
-const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
-const hash=async(p,s)=>{try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){let h=0;for(const c of s+p)h=(h*31+c.charCodeAt(0))|0;return"x"+h}};
-/* demo admin account: admin@annroes.com / admin123 */
-const ready=(async()=>{const u=read(U)||{};if(!u["admin@annroes.com"]){u["admin@annroes.com"]={name:"Admin",salt:"adm",hash:await hash("admin123","adm"),role:"admin"};write(U,u)}})();
+const URL="api/auth.php";
+/* accounts used to be kept in this browser; remove those old copies so only accounts from the database exist */
+try{localStorage.removeItem("annroe_users");localStorage.removeItem("annroe_session")}catch(e){}
+let sess=(window.SESSION&&typeof window.SESSION==="object")?window.SESSION:null;
+const call=async body=>{
+ try{
+  const r=await fetch(URL,{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const d=await r.json().catch(()=>null);
+  return d||{error:"server"};
+ }catch(e){return{error:"server"}}};
 const api={
- session:()=>read(S),
- users:()=>Object.entries(read(U)||{}).map(([email,u])=>({email,name:u.name,role:u.role||"customer"})),
- async register(name,email,pw){await ready;const users=read(U)||{},k=email.toLowerCase();if(users[k])return{error:"exists"};
-  const salt=Math.random().toString(36).slice(2);users[k]={name,salt,hash:await hash(pw,salt),role:"customer"};return write(U,users)?{ok:1}:{error:"storage"}},
- async login(email,pw){await ready;const u=(read(U)||{})[email.toLowerCase()];if(!u)return{error:"nouser"};
-  if(await hash(pw,u.salt)!==u.hash)return{error:"badpw"};write(S,{name:u.name,email:email.toLowerCase(),role:u.role||"customer"});return{ok:1}},
- logout(){try{localStorage.removeItem(S)}catch(e){}},
+ session:()=>sess,
+ async register(name,email,pw){const d=await call({action:"register",name,email,password:pw});return d.ok?{ok:1}:{error:d.error||"server"}},
+ async login(email,pw){const d=await call({action:"login",email,password:pw});if(d.ok&&d.user){sess=d.user;return{ok:1}}return{error:d.error||"server"}},
+ async logout(){await call({action:"logout"});sess=null},
  updateHeader(){const a=document.querySelector('.acct a[href="login.php"]:not(.cta)');if(!a)return;
   document.querySelectorAll(".acct .lo").forEach(x=>x.remove());const s=api.session();
   a.textContent=s?"Hi, "+s.name.split(" ")[0]:"Login / Register";if(!s)return;
   const o=document.createElement("a");o.href="#";o.className="lo";o.textContent="Logout";
-  o.onclick=e=>{e.preventDefault();api.logout();location.href="login.php"};
-  if(s.role==="admin"){const d=document.createElement("a");d.href="admin.php";d.className="lo";d.textContent="Dashboard";a.after(d,o)}else a.after(o)}
+  o.onclick=async e=>{e.preventDefault();await api.logout();location.href="login.php"};
+  a.after(o)}
 };
 document.addEventListener("DOMContentLoaded",api.updateHeader);
+/* coming back with the browser's back button: ask the server who is logged in */
+window.addEventListener("pageshow",e=>{if(e.persisted)fetch(URL+"?action=session",{credentials:"same-origin"}).then(r=>r.json()).then(d=>{sess=d.user||null;api.updateHeader()}).catch(()=>{})});
 return api})();
 
 /* ---- Product grid (runs only where #grid exists) ----

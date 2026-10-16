@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/auth.php';
 
 $dbStatus = db_status($conn);          // runs SELECT DATABASE(), VERSION(), NOW()
 $products = get_products($conn);       // rows from the `products` table ([] if DB is down)
@@ -9,6 +10,8 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="assets/js/theme.js"></script>
+<script>window.SESSION = <?= json_encode(current_user(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;</script>
 <title>Annroe's Flower Shop</title>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css?v=<?= @filemtime(__DIR__ . '/assets/css/style.css') ?: 1 ?>">
@@ -106,4 +109,5 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
 <script src="assets/js/shop.js?v=<?= @filemtime(__DIR__ . '/assets/js/shop.js') ?: 1 ?>"></script>
 <script src="assets/js/customize.js?v=<?= @filemtime(__DIR__ . '/assets/js/customize.js') ?: 1 ?>"></script>
 <script src="assets/js/catalog.js?v=<?= @filemtime(__DIR__ . '/assets/js/catalog.js') ?: 1 ?>"></script>
+<script src="assets/js/bloom.js?v=<?= @filemtime(__DIR__ . '/assets/js/bloom.js') ?: 1 ?>"></script>
 </body></html>

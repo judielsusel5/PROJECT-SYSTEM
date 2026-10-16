@@ -1,9 +1,14 @@
+<?php
+require_once __DIR__ . '/config/auth.php';   // starts the session and gives current_user()
+?>
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="assets/js/theme.js?v=<?= @filemtime(__DIR__ . '/assets/js/theme.js') ?: 1 ?>"></script>
+<script>window.SESSION = <?= json_encode(current_user(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;</script>
 <title>My account · Annroe's Flower Shop</title>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=<?= @filemtime(__DIR__ . '/assets/css/style.css') ?: 1 ?>">
 </head><body class="auth-page">
 <div class="auth-top">
 <header class="top mini">
@@ -74,7 +79,6 @@
       </dl>
       <div class="wactions">
         <a class="contbtn" href="products.php">CONTINUE SHOPPING</a>
-        <a class="contbtn alt" id="dash" href="admin.php" style="display:none">DASHBOARD</a>
         <button class="loginbtn out" id="out" type="button">LOG OUT</button>
       </div>
     </div>
@@ -84,7 +88,8 @@
 
 <footer class="foot">Annroe's Flower Shop · Always passionate since 1992</footer>
 
-<script src="assets/js/script.js"></script>
+<script src="assets/js/script.js?v=<?= @filemtime(__DIR__ . '/assets/js/script.js') ?: 1 ?>"></script>
+<script src="assets/js/bloom.js?v=<?= @filemtime(__DIR__ . '/assets/js/bloom.js') ?: 1 ?>"></script>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
@@ -130,7 +135,6 @@
 
   function welcome() {
     const s = Account.session(); if (!s) return show("login");
-    $("dash").style.display = s.role === "admin" ? "" : "none";
     Account.updateHeader(); show("welcome");
     $("wh").textContent = "Welcome, " + s.name.split(" ")[0] + "!";
     $("wn").textContent = s.name; $("we").textContent = s.email;
@@ -159,7 +163,7 @@
       idle(btn, label);
       if (r.error === "nouser") return fail("le", "leE", "We couldn't find an account with that email.");
       if (r.error === "badpw") return fail("lp", "lpE", "Incorrect password. Please try again.");
-      $("lm").textContent = "Something went wrong. Please try again."; return;
+      $("lm").textContent = r.error === "toomany" ? "Too many wrong attempts. Please wait a few minutes and try again." : "We couldn't reach the server. Please try again in a moment."; return;
     }
     done(btn, "Logged in");
     await wait(700);
@@ -181,7 +185,7 @@
     if (r.error) {
       idle(btn, label);
       if (r.error === "exists") return fail("re", "reE", "An account with this email already exists.");
-      $("rm").textContent = "We couldn't save your account. Please make sure browser storage is enabled."; return;
+      $("rm").textContent = r.error === "invalid" ? "Please check your details and try again." : "We couldn't create your account right now. Please try again in a moment."; return;
     }
     await Account.login(em, pw);
     done(btn, "Account created");
@@ -190,7 +194,7 @@
   });
 
   /* logout */
-  $("out").addEventListener("click", () => { Account.logout(); Account.updateHeader(); show("login"); });
+  $("out").addEventListener("click", async () => { await Account.logout(); Account.updateHeader(); show("login"); });
 
   /* initial view */
   if (Account.session()) welcome();

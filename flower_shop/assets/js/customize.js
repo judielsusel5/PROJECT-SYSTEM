@@ -31,8 +31,9 @@ const PHOTO={   // shape -> [[color, file, base hue, base saturation]]. Other co
  rose:[["Red","rose-red",343,.96]],
  carn:[["Pink","carnation-pink",350,.25],["Yellow","carnation-yellow",51,.49]],
  gerb:[["Pink","gerbera-pink",346,.59],["Yellow","gerbera-yellow",56,.28]],
- lisi:[["Violet","lisianthus-violet",285,.3]]};
-const FILES=["rose-red","carnation-pink","carnation-yellow","gerbera-pink","gerbera-yellow","lisianthus-violet","babys-breath","bill-20","bill-50","bill-100","bill-200","bill-500","bill-1000"];
+ lisi:[["Violet","lisianthus-violet",285,.3]],
+ tulip:[["Pink","tulip-pink",350,.43],["Red","tulip-red",355,.85],["Violet","tulip-purple",313,.66],["White","tulip-white",52,.08]]};   // real tulip blooms (cut-out photos); Blue/Orange/Yellow are tinted from the nearest one
+const FILES=["rose-red","carnation-pink","carnation-yellow","gerbera-pink","gerbera-yellow","lisianthus-violet","tulip-pink","tulip-red","tulip-white","tulip-purple","babys-breath","bill-20","bill-50","bill-100","bill-200","bill-500","bill-1000"];
 const billKey=i=>"bill-"+MONEY[i][0].replace(/\D/g,"");
 const HUE={Red:352,Pink:345,Orange:26,Yellow:52,Violet:280,Blue:215},SAT={Red:.9,Pink:.45,Orange:.8,Yellow:.55,Violet:.4,Blue:.6};
 const nameOfHex=h=>(COLORS.find(c=>c[2].toLowerCase()===String(h).toLowerCase())||[])[0];
@@ -41,7 +42,8 @@ function photoFor(shape,hex){
  const name=nameOfHex(hex);if(!name)return null;
  const exact=list.find(p=>p[0]===name);if(exact)return {id:exact[1],f:""};
  if(name==="White"){const b=list[list.length-1];return {id:b[1],f:"saturate(.05) brightness(1.2) contrast(.95)"}}
- const base=name==="Yellow"?list[list.length-1]:list[0],rot=((HUE[name]-base[2]+540)%360)-180;
+ const near=shape==="tulip"?list.filter(p=>p[0]!=="White").reduce((m,p)=>Math.abs(((HUE[name]-p[2]+540)%360)-180)<Math.abs(((HUE[name]-m[2]+540)%360)-180)?p:m):null,
+       base=near||(name==="Yellow"?list[list.length-1]:list[0]),rot=((HUE[name]-base[2]+540)%360)-180;
  const sat=Math.max(.6,Math.min(4,SAT[name]/base[3])),br=name==="Red"?.78:name==="Pink"?1.08:1;
  return {id:base[1],f:`hue-rotate(${rot}deg) saturate(${sat.toFixed(2)}) brightness(${br})`}}
 const photoDefs=()=>{
@@ -272,7 +274,7 @@ function scene3d(cv){
   /* contents */
   const ps=o.pl.slice().sort((a,b)=>a.z-b.z),fl=ps.filter(p=>!p.green&&p.shape!=="bill"),gl=ps.filter(p=>p.green),bills=o.pl.filter(p=>p.shape==="bill").sort((a,b)=>a.uid-b.uid),money=bills.length>0,nf=Math.max(1,fl.length-1);
   const Rc=Math.min(46,14+10*Math.sqrt(fl.length));
-  const stem=(x,y,z)=>{const a=pr(x,y,z),c=prv([x*.3,150,z*.3]),j=prv([0,108,0]),e=prv([0,62,0]);items.push({z:(a[2]+j[2])/2-1,d:()=>{ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.quadraticCurveTo(c[0],c[1],j[0],j[1]);ctx.lineTo(e[0],e[1]);ctx.strokeStyle="#587f4c";ctx.lineWidth=2.6*a[3];ctx.lineCap="round";ctx.stroke()}})};
+  const stem=(x,y,z,w,sa)=>{const a=sa||pr(x,y,z),c=prv([x*.3,150,z*.3]),j=prv([0,108,0]),e=prv([0,62,0]);items.push({z:(a[2]+j[2])/2-1,d:()=>{ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.quadraticCurveTo(c[0],c[1],j[0],j[1]);if(o.vase)ctx.lineTo(e[0],e[1]);ctx.strokeStyle="#587f4c";ctx.lineWidth=2.6*(w||1)*a[3];ctx.lineCap="round";ctx.stroke()}})};
   ps.forEach(p=>{
    if(p.shape==="bill")return;
    let dx,Y,dep;
@@ -293,10 +295,12 @@ function scene3d(cv){
      if(im)ctx.drawImage(im,-50,-100,100,100);
      else{ctx.strokeStyle=GREEN[i][1];ctx.fillStyle=GREEN[i][1];ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-90);ctx.stroke();for(let q=0;q<6;q++){ctx.beginPath();ctx.ellipse(q%2?14:-14,-14-q*14,12,6,q%2?-.6:.6,0,7);ctx.fill()}}
      ctx.restore()}});return}
-   const lv=ca<0?1:0;stem(dx,Y-3,dep);const P0=pr(dx,Y,dep),ph=photoFor(p.shape,p.color),svgIm=ph?null:svgUri(p.shape,p.color),dia=100*(.3+((p.uid*37)%10)/220)*p.s,fx=.75+.25*Math.abs(ca),rot=(p.shape==="tulip"?((p.uid*37)%50-25)+p.urot*.5:(p.uid*67)%360+p.urot)*Math.PI/180;
+   const lv=ca<0?1:0;if(p.shape!=="tulip")stem(dx,Y-3,dep);const P0=pr(dx,Y,dep),ph=photoFor(p.shape,p.color),svgIm=ph?null:svgUri(p.shape,p.color),dia=100*(.3+((p.uid*37)%10)/220)*p.s*(p.shape==="tulip"?1.4:1),fx=.75+.25*Math.abs(ca),rot=(p.shape==="tulip"?((p.uid*37)%24-12)+p.urot*.35:(p.uid*67)%360+p.urot)*Math.PI/180;
+   if(p.shape==="tulip"){const S0=dia/100*P0[3];stem(dx,Y-3,dep,1.6,[P0[0],P0[1]+48*S0,P0[2],P0[3]])}
    if(!money)hits.push({uid:p.uid,x:P0[0],y:P0[1],r:dia/2*P0[3]*.85,z:P0[2]});
+   
    items.push({z:P0[2],d:()=>{const S=dia/100*P0[3],im=ph?spr(ph.id,ph.f||"",lv):spr(svgIm,"",lv),K=ph?1:1.35;ctx.save();ctx.translate(P0[0],P0[1]);ctx.scale(fx,1);
-    ctx.beginPath();ctx.ellipse(1.2*S,3*S,14*S,13*S,0,0,7);ctx.fillStyle="rgba(40,26,16,.2)";ctx.fill();ctx.rotate(rot);
+    ctx.beginPath();ctx.ellipse(1.2*S,3*S,14*S,13*S,0,0,7);ctx.fillStyle="rgba(40,26,16,.2)";ctx.fill();if(p.shape==="tulip"){ctx.translate(0,48*S);ctx.rotate(rot);ctx.translate(0,-48*S)}else ctx.rotate(rot);
     if(im)ctx.drawImage(im,-50*S*K,-50*S*K,100*S*K,100*S*K);else{ctx.beginPath();ctx.arc(0,0,14*S,0,7);ctx.fillStyle=p.color;ctx.fill()}ctx.restore()}})});
   /* money bouquet: bills folded into petals, ring after ring around the flowers */
   if(money){let idx=0,k=0;const R0=fl.length?Rc+13:5,capOf=s=>{let c=0,kk=0;for(;;){const rk=R0+kk*15*s;if(rk+20*s>[72,91,104,117][o.size==null?1:o.size]&&kk>0)break;c+=Math.max(6,Math.floor(2*Math.PI*rk/(11*s)));kk++}return c};let sc=.6;for(let s=1.9;s>=.6;s-=.05){if(capOf(s)>=bills.length){sc=s;break}}
